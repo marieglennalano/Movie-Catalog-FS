@@ -17,6 +17,20 @@ export default function Login() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // ✅ Decode JWT to extract isAdmin
+  const parseJwt = (token) => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (err) {
+      return {};
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -32,13 +46,17 @@ export default function Login() {
 
       if (!response.ok) throw new Error(data.message || 'Login failed');
 
-      // Save token
-      localStorage.setItem('token', data.access);
+      // ✅ Save token
+      const token = data.access;
+      localStorage.setItem('token', token);
 
-      // Set user context
+      // ✅ Decode token to extract isAdmin
+      const decoded = parseJwt(token);
+
+      // ✅ Set user context
       login({
-        email: formData.email,
-        isAdmin: data.isAdmin || false,
+        email: decoded.email || formData.email,
+        isAdmin: decoded.isAdmin === true
       });
 
       Swal.fire({
@@ -46,12 +64,13 @@ export default function Login() {
         text: 'Logged in!',
         icon: 'success',
       }).then(() => {
-        if (data.isAdmin) {
+        if (decoded.isAdmin) {
           navigate('/admin-dashboard');
         } else {
           navigate('/');
         }
       });
+
     } catch (err) {
       setError(err.message);
       Swal.fire({

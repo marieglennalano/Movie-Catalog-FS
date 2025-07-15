@@ -1,6 +1,10 @@
+// src/components/AdminView/AdminView.js
 import { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Card, Row, Col } from 'react-bootstrap';
+import {
+  Table, Button, Modal, Form, Card, Row, Col, ButtonGroup
+} from 'react-bootstrap';
 import { Notyf } from 'notyf';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 import './AdminView.css';
 
 export default function AdminView() {
@@ -8,14 +12,17 @@ export default function AdminView() {
 
   const [movies, setMovies] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [editingMovie, setEditingMovie] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedMovieId, setSelectedMovieId] = useState(null);
 
+  // Form state
   const [title, setTitle] = useState('');
   const [director, setDirector] = useState('');
   const [year, setYear] = useState('');
   const [genre, setGenre] = useState('');
   const [description, setDescription] = useState('');
 
+  // Fetch all movies from backend
   const fetchAllMovies = () => {
     fetch('https://movie-catalog-api-zwov.onrender.com/movies/getMovies')
       .then(res => res.json())
@@ -29,28 +36,35 @@ export default function AdminView() {
     fetchAllMovies();
   }, []);
 
-  const handleShow = (movie = null) => {
-    if (movie) {
-      setEditingMovie(movie);
-      setTitle(movie.title);
-      setDirector(movie.director);
-      setYear(movie.year);
-      setGenre(movie.genre);
-      setDescription(movie.description);
-    } else {
-      setEditingMovie(null);
-      setTitle('');
-      setDirector('');
-      setYear('');
-      setGenre('');
-      setDescription('');
-    }
+  const resetForm = () => {
+    setTitle('');
+    setDirector('');
+    setYear('');
+    setGenre('');
+    setDescription('');
+    setSelectedMovieId(null);
+    setIsEditing(false);
+  };
+
+  const openAddModal = () => {
+    resetForm();
+    setShowModal(true);
+  };
+
+  const openEditModal = (movie) => {
+    setIsEditing(true);
+    setSelectedMovieId(movie._id);
+    setTitle(movie.title);
+    setDirector(movie.director);
+    setYear(movie.year);
+    setGenre(movie.genre);
+    setDescription(movie.description);
     setShowModal(true);
   };
 
   const handleClose = () => {
     setShowModal(false);
-    setEditingMovie(null);
+    resetForm();
   };
 
   const handleSubmit = (e) => {
@@ -61,46 +75,32 @@ export default function AdminView() {
       return;
     }
 
-    const movieData = {
-      title: title.trim(),
-      director: director.trim(),
-      year: parseInt(year),
-      genre: genre.trim(),
-      description: description.trim(),
-      comments: [] // ✅ Required by backend schema
-    };
+    const movieData = { title, director, year, genre, description };
 
-    const endpoint = editingMovie
-      ? `https://movie-catalog-api-zwov.onrender.com/movies/updateMovie/${editingMovie._id}`
+    const url = isEditing
+      ? `https://movie-catalog-api-zwov.onrender.com/movies/updateMovie/${selectedMovieId}`
       : 'https://movie-catalog-api-zwov.onrender.com/movies/addMovie';
 
-    const method = editingMovie ? 'PUT' : 'POST';
+    const method = isEditing ? 'PUT' : 'POST';
 
-    fetch(endpoint, {
+    fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(movieData)
+      body: JSON.stringify(movieData),
     })
       .then(res => res.json())
-      .then(data => {
-        if (data._id) {
-          notyf.success(editingMovie ? 'Movie updated.' : 'Movie added.');
-          fetchAllMovies();
-          handleClose();
-        } else {
-          throw new Error('Movie not saved');
-        }
+      .then(() => {
+        notyf.success(isEditing ? 'Movie updated.' : 'Movie added.');
+        fetchAllMovies();
+        handleClose();
       })
-      .catch((err) => {
-        console.error('🔥 Error:', err);
-        notyf.error('Server error. Failed to add movie.');
-      });
+      .catch(() => notyf.error('Server error.'));
   };
 
   const deleteMovie = (movieId) => {
     if (window.confirm('Are you sure you want to delete this movie?')) {
       fetch(`https://movie-catalog-api-zwov.onrender.com/movies/deleteMovie/${movieId}`, {
-        method: 'DELETE',
+        method: 'DELETE'
       })
         .then(res => res.json())
         .then(() => {
@@ -112,57 +112,53 @@ export default function AdminView() {
   };
 
   return (
-    <div className="dashboard-container">
-      <Card className="admin-card">
+    <div className="dashboard-container p-4">
+      <Card className="admin-card shadow-sm">
         <Card.Body>
           <Row className="mb-4">
             <Col className="text-end">
-              <Button variant="primary" onClick={() => handleShow()} id="addMovie">Add New Movie</Button>
+              <Button variant="primary" onClick={openAddModal} id="addMovie">
+                ➕ Add New Movie
+              </Button>
             </Col>
           </Row>
 
-          <Table striped bordered hover responsive className="movie-table">
-            <thead className="table-dark text-center">
+          <Table striped bordered responsive hover className="movie-table text-center align-middle">
+            <thead className="table-dark">
               <tr>
                 <th>Title</th>
                 <th>Director</th>
                 <th>Year</th>
                 <th>Genre</th>
-                <th>Description</th>
-                <th>Actions</th>
+                <th>Description & Actions</th>
               </tr>
             </thead>
             <tbody>
               {movies.length > 0 ? (
-                movies.map((movie) => (
+                movies.map(movie => (
                   <tr key={movie._id}>
                     <td>{movie.title}</td>
                     <td>{movie.director}</td>
                     <td>{movie.year}</td>
                     <td>{movie.genre}</td>
-                    <td>{movie.description}</td>
-                    <td>
-                      <Button
-                        variant="warning"
-                        size="sm"
-                        onClick={() => handleShow(movie)}
-                        className="me-2"
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => deleteMovie(movie._id)}
-                      >
-                        Delete
-                      </Button>
+                    <td className="text-start">
+                      <div>{movie.description}</div>
+                      <div className="mt-2">
+                        <ButtonGroup size="sm">
+                          <Button variant="warning" onClick={() => openEditModal(movie)}>
+                            <FaEdit className="me-1" /> Edit
+                          </Button>
+                          <Button variant="danger" onClick={() => deleteMovie(movie._id)}>
+                            <FaTrash className="me-1" /> Delete
+                          </Button>
+                        </ButtonGroup>
+                      </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="text-center text-muted">No movies found.</td>
+                  <td colSpan="5" className="text-muted text-center">No movies found.</td>
                 </tr>
               )}
             </tbody>
@@ -170,35 +166,34 @@ export default function AdminView() {
         </Card.Body>
       </Card>
 
-      {/* Add/Edit Movie Modal */}
       <Modal show={showModal} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{editingMovie ? 'Edit Movie' : 'Add Movie'}</Modal.Title>
+          <Modal.Title>{isEditing ? 'Edit Movie' : 'Add Movie'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            <Form.Group>
+            <Form.Group className="mb-2">
               <Form.Label>Title</Form.Label>
               <Form.Control value={title} onChange={e => setTitle(e.target.value)} required />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="mb-2">
               <Form.Label>Director</Form.Label>
               <Form.Control value={director} onChange={e => setDirector(e.target.value)} required />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="mb-2">
               <Form.Label>Year</Form.Label>
               <Form.Control type="number" value={year} onChange={e => setYear(e.target.value)} required />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="mb-2">
               <Form.Label>Genre</Form.Label>
               <Form.Control value={genre} onChange={e => setGenre(e.target.value)} required />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="mb-2">
               <Form.Label>Description</Form.Label>
               <Form.Control as="textarea" rows={3} value={description} onChange={e => setDescription(e.target.value)} required />
             </Form.Group>
-            <Button type="submit" variant="primary" className="mt-3">
-              {editingMovie ? 'Update Movie' : 'Add Movie'}
+            <Button type="submit" variant="success" className="mt-2">
+              {isEditing ? 'Update Movie' : 'Add Movie'}
             </Button>
           </Form>
         </Modal.Body>

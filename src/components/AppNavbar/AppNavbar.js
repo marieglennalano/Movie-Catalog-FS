@@ -1,4 +1,3 @@
-// src/components/AppNavbar.js
 import React, { useContext } from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
@@ -23,18 +22,23 @@ const AppNavbar = () => {
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/">Home</Nav.Link>
 
-            {/* ✅ Show Dashboard only for Admins */}
-            {!user?.isAdmin && (
+            {user?.isAdmin && (
               <Nav.Link as={Link} to="/admin-dashboard">Dashboard</Nav.Link>
             )}
 
-            {user && <Nav.Link as={Link} to="/profile">Profile</Nav.Link>}
-            {user && <Nav.Link as={Link} to="/movies">Movies</Nav.Link>}
+            {user && !user?.isAdmin && (
+              <>
+                <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
+                <Nav.Link as={Link} to="/movies">Movies</Nav.Link>
+              </>
+            )}
           </Nav>
 
           <Nav>
             {user ? (
-              <Button variant="outline-light" onClick={handleLogout}>Logout</Button>
+              <Button variant="outline-light" onClick={handleLogout}>
+                Logout
+              </Button>
             ) : (
               <>
                 <Button variant="outline-light" as={Link} to="/login" className="me-2">
