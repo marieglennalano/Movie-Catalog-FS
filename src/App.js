@@ -1,16 +1,19 @@
 // src/App.js
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+
 import AppNavbar from './components/AppNavbar/AppNavbar';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import Movies from './pages/Movies/Movies';
-// import Profile from './pages/Profile/Profile'; 
 import Home from './pages/Home/Home';
-import AdminDashboard from './pages/AdminDashboard/AdminDashboard';
-
+// import Profile from './pages/Profile/Profile';
+import AdminView from './components/AdminView/AdminView';
+import UserContext from './context/UserContext';
 
 function App() {
+  const { user } = useContext(UserContext); // ✅ Fix user undefined
+
   return (
     <>
       <AppNavbar />
@@ -20,8 +23,17 @@ function App() {
         <Route path="/register" element={<Register />} />
         {/* <Route path="/profile" element={<Profile />} /> */}
         <Route path="/movies" element={<Movies />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        {/* Add more routes like /movies/:id, etc. */}
+        
+        {/* ✅ Admin-only protected route */}
+        <Route
+          path="/admin-dashboard"
+          element={
+            user?.isAdmin ? <AdminView /> : <Navigate to="/" replace />
+          }
+        />
+        
+        {/* Optional: 404 fallback route */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
   );
