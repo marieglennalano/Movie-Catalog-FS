@@ -1,0 +1,72 @@
+/* AdminView.css */
+
+.dashboard-container {
+  padding: 2rem 1rem;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+.admin-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  background-color: #ffffff;
+}
+
+.admin-header {
+  font-weight: 700;
+  font-size: 1.75rem;
+  color: #2c3e50;
+}
+
+.movie-table {
+  margin-top: 1rem;
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 0.95rem;
+}
+
+.movie-table thead th {
+  background-color: #343a40;
+  color: #fff;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.movie-table tbody td {
+  vertical-align: middle;
+}
+
+.movie-table td,
+.movie-table th {
+  padding: 0.75rem;
+}
+
+.btn-primary,
+.btn-success {
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+}
+
+.modal-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.modal-body label {
+  font-weight: 500;
+}
+
+.form-control {
+  border-radius: 6px;
+}
+
+button[type='submit'] {
+  font-weight: 600;
+}
+
+.text-muted {
+  font-style: italic;
+  color: #6c757d !important;
+}

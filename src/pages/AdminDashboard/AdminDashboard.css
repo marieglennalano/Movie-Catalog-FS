@@ -1,0 +1,15 @@
+/* src/pages/AdminDashboard/AdminDashboard.css */
+.dashboard-container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.admin-dashboard-card {
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+}

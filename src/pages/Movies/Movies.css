@@ -1,0 +1,13 @@
+.movie-img {
+  height: 400px;
+  object-fit: cover;
+}
+
+.movie-card {
+  border-radius: 10px;
+  transition: transform 0.2s;
+}
+
+.movie-card:hover {
+  transform: translateY(-5px);
+}
