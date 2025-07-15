@@ -28,7 +28,7 @@ const AppNavbar = () => {
 
             {user && !user?.isAdmin && (
               <>
-                <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
+                {/* <Nav.Link as={Link} to="/profile">Profile</Nav.Link> */}
                 <Nav.Link as={Link} to="/movies">Movies</Nav.Link>
               </>
             )}
