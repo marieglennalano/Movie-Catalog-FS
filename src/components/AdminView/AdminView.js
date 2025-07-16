@@ -1,8 +1,8 @@
-// src/components/AdminView/AdminView.js
 import { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Card, Row, Col, ButtonGroup } from 'react-bootstrap';
 import { Notyf } from 'notyf';
 import { FaEdit, FaTrash } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 import './AdminView.css';
 
 export default function AdminView() {
@@ -97,41 +97,70 @@ export default function AdminView() {
     }
   };
 
-  const updateMovie = async (e) => {
-    e.preventDefault();
+  const handleUpdateMovie = (e) => {
+  e.preventDefault();
+
+  if (!title || !director || !year || !genre || !description) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Missing Fields',
+      text: 'Please fill in all fields.',
+    });
+    return;
+  }
+
+  const updatedMovie = {
+    title: title.trim(),
+    director: director.trim(),
+    year: parseInt(year),
+    genre: genre.trim(),
+    description: description.trim(),
+  };
+
     const token = localStorage.getItem('token');
+    const movieId = editingMovie?._id;
 
-    const movieData = {
-      title: title.trim(),
-      director: director.trim(),
-      year: parseInt(year),
-      genre: genre.trim(),
-      description: description.trim()
-    };
+    // ✅ Debug log to make sure ID exists
+    console.log("Updating Movie ID:", movieId);
 
-    try {
-      const response = await fetch(`https://movie-catalog-api-zwov.onrender.com/movies/updateMovie/${editingMovie._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(movieData)
+    fetch(`https://movie-catalog-api-zwov.onrender.com/movies/updateMovie/${movieId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // ✅ Make sure token is added
+      },
+      body: JSON.stringify(updatedMovie),
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Update response:", data); // ✅ Debug log
+
+        if (data.movie) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Movie Updated',
+            text: `${data.movie.title} has been updated successfully!`,
+            timer: 2000,
+            showConfirmButton: false,
+          });
+          fetchAllMovies();
+          handleClose();
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Update Failed',
+            text: data.message || 'Unknown error occurred.',
+          });
+        }
+      })
+      .catch(err => {
+        console.error("Error during update:", err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Server Error',
+          text: err.message || 'Something went wrong.',
+        });
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        notyf.success('Movie updated successfully!');
-        fetchAllMovies();
-        handleClose();
-      } else {
-        notyf.error(data.message || 'Failed to update movie.');
-      }
-    } catch (err) {
-      console.error('Error:', err);
-      notyf.error('Server error while updating movie.');
-    }
   };
 
   const deleteMovie = (id) => {
@@ -210,7 +239,7 @@ export default function AdminView() {
           <Modal.Title>{editingMovie ? 'Edit Movie' : 'Add Movie'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={editingMovie ? updateMovie : addMovie}>
+          <Form onSubmit={editingMovie ? handleUpdateMovie : addMovie}>
             <Form.Group>
               <Form.Label>Title</Form.Label>
               <Form.Control value={title} onChange={e => setTitle(e.target.value)} required />
