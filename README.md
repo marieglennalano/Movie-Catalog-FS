@@ -1,70 +1,117 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 🎬 Movie Catalog - Full Stack MERN App
 
-## Available Scripts
+This is a Full Stack Movie Catalog web application built using the **MERN stack** (MongoDB, Express.js, React.js, Node.js). It allows users to browse, view, and comment on movies, while admin users have access to manage the movie database via a dashboard.
 
-In the project directory, you can run:
+## 🌐 Live Demo
+[https://movie-catalog-fs.onrender.com](https://movie-catalog-fs.onrender.com)
 
-### `npm start`
+> ⚠️ If deploying to Render, please allow a few seconds for the backend server to wake up.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Features
 
-### `npm test`
+### 👤 Authentication
+- User registration and login (JWT-based)
+- Role-based access control (user vs admin)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🎞️ Movies
+- View all movies as cards
+- Search and filter movies
+- View detailed movie information
+- Leave comments on movies
 
-### `npm run build`
+### 🛠️ Admin Features
+- Admin Dashboard at `/admin-dashboard`
+- Add new movies
+- Edit and update movie details
+- Delete movies
+- Protected routes with admin-only access
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 📱 Responsive UI
+- Clean and responsive design using **React Bootstrap**
+- SweetAlert2 for toast feedback and modals
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📁 Project Structure
 
-### `npm run eject`
+```
+Movie-Catalog-FS/
+├── client/         # React Frontend
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── context/
+│   │   └── App.js
+│   └── package.json
+├── server/         # Express + MongoDB Backend
+│   ├── controllers/
+│   ├── models/
+│   ├── middleware/
+│   └── routes/
+│   └── server.js
+└── README.md
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🔐 Admin Access
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Use the following credentials to log in as an admin:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+📧 Email: admin@example.com
+🔑 Password: admin123
+```
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🛠️ Tech Stack
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+**Frontend**
+- React.js
+- React Router
+- React Bootstrap
+- SweetAlert2
 
-### Code Splitting
+**Backend**
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT Authentication
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 🧪 How to Run Locally
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Backend
+```bash
+cd server
+npm install
+npm run dev
+```
 
-### Making a Progressive Web App
+### Frontend
+```bash
+cd client
+npm install
+npm run dev
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## 📝 License
+This project is open-source and available under the [MIT License](LICENSE).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 👩‍💻 Author
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Marie Glenn Alano  
+📍 Cavite, Philippines  
+📧 marieglennalano@gmail.com  
+🔗 [LinkedIn](https://www.linkedin.com/in/marie-glenn-alano-4aab99118/)  
+🔗 [GitHub](https://github.com/marieglennalano)
