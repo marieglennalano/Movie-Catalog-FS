@@ -4,6 +4,7 @@
 This is a Full Stack Movie Catalog web application built using the **MERN stack** (MongoDB, Express.js, React.js, Node.js). It allows users to browse, view, and comment on movies, while admin users have access to manage the movie database via a dashboard.
 
 ## 🌐 Live Demo
+https://movie-catalog-fs.vercel.app/
 [https://movie-catalog-fs.onrender.com](https://movie-catalog-fs.onrender.com)
 
 > ⚠️ If deploying to Render, please allow a few seconds for the backend server to wake up.
@@ -62,7 +63,7 @@ Movie-Catalog-FS/
 Use the following credentials to log in as an admin:
 
 ```
-📧 Email: admin@example.com
+📧 Email: admin@mail.com
 🔑 Password: admin123
 ```
 
